@@ -1,4 +1,4 @@
-﻿using DENMAP_SERVER.Entity;
+using DENMAP_SERVER.Entity;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -166,6 +166,30 @@ namespace DENMAP_SERVER.Repository
                 result = cmd.ExecuteNonQuery();
             }
             return result;
+        }
+
+        public double getPostRating(MySqlConnection connection, int id)
+        {
+            double rating = 0.0;
+            string query = $"SELECT rating " +
+                           $"FROM posts " +
+                           $"WHERE id = @Id";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        if (!reader.IsDBNull(reader.GetOrdinal("rating")))
+                        {
+                            rating = Convert.ToDouble(reader["rating"]);
+                        }
+                    }
+                }
+            }
+            return rating;
         }
     }
 }

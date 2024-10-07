@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,17 +12,27 @@ namespace DENMAP_SERVER.Entity.dto
         public User User { get; set; }
         public double Rating { get; set; }
         public string Message { get; set; }
-        public Post Post { get; set; }
+        public int PostId { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public CommentDTO(int id, User user, double rating, string message, Post post, DateTime createdAt)
+        public CommentDTO(int id, User user, double rating, string message, int postId, DateTime createdAt)
         {
             Id = id;
             User = user;
             Rating = rating;
             Message = message;
-            Post = post;
+            PostId = postId;
             CreatedAt = createdAt;
+        }
+
+        public CommentDTO(Comment comment, User user)
+        {
+            Id = comment.Id;
+            User = user;
+            Rating = comment.Rating;
+            Message = comment.Message;
+            PostId = comment.PostId;
+            CreatedAt = comment.CreatedAt;
         }
     }
 }

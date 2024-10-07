@@ -1,4 +1,4 @@
-﻿using DENMAP_SERVER.Entity;
+using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Repository;
 using MySql.Data.MySqlClient;
 using System;
@@ -136,6 +136,19 @@ namespace DENMAP_SERVER.Service
             }
 
             return result;
+        }
+
+        public double GetPostRating(int id)
+        {
+            double rating = 0;
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    rating = postRepository.getPostRating(connection, id);
+                }
+            }
         }
     }
 }
