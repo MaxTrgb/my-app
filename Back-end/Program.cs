@@ -1,5 +1,4 @@
-﻿using System;
-using Nancy.Hosting.Self;
+﻿using Nancy.Hosting.Self;
 
 namespace DENMAP_SERVER
 {

@@ -3,11 +3,6 @@ using DENMAP_SERVER.Entity.dto;
 using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Service;
 using Nancy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy.ModelBinding;
 using DENMAP_SERVER.Controller.request;
 
@@ -21,8 +16,7 @@ namespace DENMAP_SERVER.Controller
         private CommentService _commentService = new CommentService();
         private GenreService _genreService = new GenreService();
 
-        private readonly string _basePath = "/api/v1/post";
-       
+        private const string _BASE_PATH = "/api/v1/post";
 
         public PostController()
         {
@@ -42,9 +36,7 @@ namespace DENMAP_SERVER.Controller
                     .WithHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
             });
 
-
-
-            Get(_basePath + "/{id}", parameters =>
+            Get(_BASE_PATH + "/{id}", parameters =>
             {
                 int id = parameters.id;
 
@@ -52,16 +44,24 @@ namespace DENMAP_SERVER.Controller
                 {
                     Post post = _postService.GetPostById(id);
                     if (post == null)
+                    {
                         return Response.AsJson(new { message = "Post with id " + id + " not found" }, HttpStatusCode.NotFound);
+                    }
+
                     Console.WriteLine("post: " + post);
 
                     Genre genre = _genreService.GetGenreById(post.GenreId);
                     if (genre == null)
+                    {
                         return Response.AsJson(new { message = "Genre with id " + post.GenreId + " not found" }, HttpStatusCode.NotFound);
+                    }
 
                     User user = _userService.GetUserById(post.UserId);
                     if (user == null)
+                    {
                         return Response.AsJson(new { message = "User with id " + post.UserId + " not found" }, HttpStatusCode.NotFound);
+                    }
+
                     Console.WriteLine("user: " + user);
 
                     List<Comment> comments = _commentService.GetCommentsByPostId(id);
@@ -69,19 +69,16 @@ namespace DENMAP_SERVER.Controller
 
                     List<User> commentUsers = new List<User>();
                     if (comments != null)
+                    {
                         commentUsers = _userService.GetUsersByIds(comments.Select(x => x.UserId).ToList());
-
-
+                    }
 
                     List<CommentDTO> commentDTOs = new List<CommentDTO>();
 
                     foreach (Comment comment in comments)
                     {
-
                         commentDTOs.Add(new CommentDTO(comment, commentUsers.Find(x => x.Id == comment.UserId)));
-
                     }
-
 
                     PostDTO postDTO = new PostDTO(post, user, commentDTOs, genre);
 
@@ -93,10 +90,8 @@ namespace DENMAP_SERVER.Controller
                 }
             });
 
-            Post(_basePath + "/", args =>
+            Post(_BASE_PATH + "/", args =>
             {
-
-
                 PostRequest request = null;
 
                 try
@@ -118,7 +113,6 @@ namespace DENMAP_SERVER.Controller
                     return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
                 }
 
-
                 try
                 {
                     int postId = _postService.AddPost(request.userId, request.title, request.image, request.content, request.genreId);
@@ -130,8 +124,7 @@ namespace DENMAP_SERVER.Controller
                 }
             });
 
-
-            Get(_basePath + "/", args =>
+            Get(_BASE_PATH + "/", args =>
             {
                 int? userId = (int?)this.Request.Query["userId"];
                 int? genreId = (int?)this.Request.Query["genreId"];
@@ -144,22 +137,32 @@ namespace DENMAP_SERVER.Controller
                 try
                 {
                     if (!userId.HasValue && !genreId.HasValue)
+                    {
                         return GetAllPosts();
+                    }
 
                     if (genreId.HasValue)
+                    {
                         return GetPostsByGenreId(genreId.Value);
+                    }
 
                     user = _userService.GetUserById(userId.Value);
                     if (user == null)
+                    {
                         return Response.AsJson(new { message = "User not found" }, HttpStatusCode.NotFound);
+                    }
 
                     posts = _postService.GetPostsByUserId(userId.Value);
                     if (posts == null)
+                    {
                         return Response.AsJson(new { message = "Posts not found" }, HttpStatusCode.NotFound);
+                    }
 
                     genres = _genreService.GetGenresByIds(posts.Select(x => x.GenreId).ToList());
                     if (genres == null)
+                    {
                         return Response.AsJson(new { message = "Genres not found" }, HttpStatusCode.NotFound);
+                    }
 
                     foreach (Post post in posts)
                         postDTOs.Add(new PostDTO(post, user, genres.Find(x => x.Id == post.GenreId)));
@@ -171,6 +174,59 @@ namespace DENMAP_SERVER.Controller
                 }
 
                 return Response.AsJson(postDTOs);
+            });
+
+
+            Put(_BASE_PATH + "/{id}", parameters =>
+            {
+                int postIdFromUrl = parameters.id;
+
+                PostRequest request = null;
+
+                try
+                {
+                    request = this.Bind<PostRequest>();
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                User user = null;
+                try
+                {
+                    user = _userService.GetUserById(request.userId);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                Post post = null;
+                try
+                {
+                    post = _postService.GetPostById(postIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                if (!post.UserId.Equals(user.Id))
+                {
+                    return Response.AsJson(new { message = "You have no permission to edit this post" }, HttpStatusCode.Unauthorized);
+                }
+
+
+                try
+                {
+                    int postId = _postService.UpdatePost(postIdFromUrl, request.title, request.image, request.content, request.genreId);
+                    return Response.AsJson(new { message = postId }, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
             });
         }
 

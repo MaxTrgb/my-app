@@ -1,20 +1,17 @@
 ﻿using DENMAP_SERVER.Entity;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.Common;
 
 namespace DENMAP_SERVER.Repository
 {
     internal class CommentRepository
     {
-        public int addComment(MySqlConnection connection, int userId, double rating, string message, int postId, DateTime createdAt)
+        public int addComment(DbConnection connection, int userId, double rating, string message, int postId, DateTime createdAt)
         {
-            string query = $"INSERT INTO comments (post_id, user_id, rating, message, created_at) VALUES ( @postId, @userId, @rating, @message, @createdAt); SELECT LAST_INSERT_ID();";
+            string query = $"INSERT INTO comments (post_id, user_id, rating, message, created_at) " +
+                $"VALUES ( @postId, @userId, @rating, @message, @createdAt); SELECT LAST_INSERT_ID();";
             int id = 0;
-            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
             {
                 cmd.Parameters.AddWithValue("@userId", userId);
                 cmd.Parameters.AddWithValue("@rating", rating);
@@ -27,13 +24,13 @@ namespace DENMAP_SERVER.Repository
         }
 
 
-        public List<Comment> getCommentsByUserID(MySqlConnection connection, int userId)
+        public List<Comment> getCommentsByUserID(DbConnection connection, int userId)
         {
             List<Comment> comments = new List<Comment>();
 
             string query = $"SELECT * FROM comments WHERE user_id = {userId}";
 
-            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
             {
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -55,13 +52,13 @@ namespace DENMAP_SERVER.Repository
             return comments;
         }
 
-        public List<Comment> getCommentsByPostID(MySqlConnection connection, int postId)
+        public List<Comment> getCommentsByPostID(DbConnection connection, int postId)
         {
             List<Comment> comments = new List<Comment>();
 
             string query = $"SELECT * FROM comments WHERE post_id = {postId}";
 
-            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
             {
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {

@@ -1,12 +1,9 @@
-﻿using DENMAP_SERVER.Entity;
+﻿using DENMAP_SERVER.Controller.request;
+using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Entity.dto;
 using DENMAP_SERVER.Service;
 using Nancy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Nancy.ModelBinding;
 
 namespace DENMAP_SERVER.Controller
 {
@@ -16,7 +13,7 @@ namespace DENMAP_SERVER.Controller
         private PostService _postService = new PostService();
         private CommentService _commentService = new CommentService();
 
-        private string _basePath = "/api/v1/user";
+        private const string _BASE_PATH = "/api/v1/user";
 
         public UserController()
         {
@@ -38,7 +35,7 @@ namespace DENMAP_SERVER.Controller
                     .WithHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
             });
 
-            Get(_basePath + "/{id}", parameters =>
+            Get(_BASE_PATH + "/{id}", parameters =>
             {
                 int id = parameters.id;
 
@@ -60,7 +57,41 @@ namespace DENMAP_SERVER.Controller
                     return Response.AsJson(new { message = ex.Message }, HttpStatusCode.NotFound);
                 }
             });
-        }
 
+            Put(_BASE_PATH + "/{id}", parameters =>
+            {
+                int id = parameters.id;
+
+                UserRequest request = null;
+                try
+                {
+                    request = this.Bind<UserRequest>();
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                try
+                {
+                    User user = _userService.GetUserById(id);
+                }
+                catch (Exception ex)
+                {
+                    return Response.AsJson(new { message = ex.Message }, HttpStatusCode.NotFound);
+                }
+
+                try
+                {
+                    int userId = _userService.UpdateUser(id, request.Name, request.Password, request.Image, request.Description);
+
+                    return Response.AsJson(new { message = "User updated successfully", userId });
+                }
+                catch (Exception ex)
+                {
+                    return Response.AsJson(new { message = ex.Message }, HttpStatusCode.BadRequest);
+                }
+            });
+        }
     }
 }

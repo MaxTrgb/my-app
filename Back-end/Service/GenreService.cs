@@ -24,7 +24,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return id;
@@ -44,7 +45,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -65,7 +67,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -86,12 +89,15 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
             if (genre == null)
+            {
                 throw new Exception("Genre with id: " + id + " not found");
+            }
 
             return genre;
 
@@ -111,7 +117,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return genres;

@@ -8,7 +8,7 @@ namespace DENMAP_SERVER.Controller
     public class AuthController : NancyModule
     {
         private UserService _userService = new UserService();
-        private readonly string _basePath = "/auth";
+        private const string _BASE_PATH = "/auth";
 
         public AuthController()
         {
@@ -30,13 +30,13 @@ namespace DENMAP_SERVER.Controller
                     .WithHeader("Access-Control-Allow-Credentials", "true");
             });
 
-            Post(_basePath + "/login", args =>
+            Post(_BASE_PATH + "/login", args =>
             {
-                AuthRequest request = null;
+                UserRequest request = null;
 
                 try
                 {
-                    request = this.Bind<AuthRequest>();
+                    request = this.Bind<UserRequest>();
                 }
                 catch (Exception e)
                 {
@@ -54,13 +54,13 @@ namespace DENMAP_SERVER.Controller
                 }
             });
 
-            Post(_basePath + "/register", args =>
+            Post(_BASE_PATH + "/register", args =>
             {
-                AuthRequest request = null;
+                UserRequest request = null;
 
                 try
                 {
-                    request = this.Bind<AuthRequest>();
+                    request = this.Bind<UserRequest>();
                 }
                 catch (Exception e)
                 {

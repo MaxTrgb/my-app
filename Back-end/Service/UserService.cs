@@ -1,11 +1,6 @@
 ﻿using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Repository;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DENMAP_SERVER.Service
 {
@@ -31,7 +26,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
 
                 if (user != null)
@@ -45,7 +41,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return id;
@@ -63,7 +60,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -90,8 +88,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine("Error: " + ex.Message);
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -122,7 +120,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -146,7 +145,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -159,23 +159,26 @@ namespace DENMAP_SERVER.Service
         }
 
 
-        public int updateUser(int id, string name, string password, string image, double rating, string description)
+        public int UpdateUser(int id, string name, string password, string image, string description)
         {
             User user = GetUserById(id);
-
+            int result = 0;
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
                 try
                 {
-                    return userRepository.updateUser(connection, id, name, password, image, rating, description);
+                    result = userRepository.updateUser(connection, id, name, password, image, description);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
+
+            return result;
         }
 
         public int UpdateUserRating(int id, double rating)
@@ -191,7 +194,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -217,7 +221,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 

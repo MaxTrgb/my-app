@@ -14,7 +14,7 @@ namespace DENMAP_SERVER.Controller
         private PostService _postService = new PostService();
         private CommentService _commentService = new CommentService();
 
-        private readonly string _basePath = "/api/v1/comment";
+        private const string _BASE_PATH = "/api/v1/comment";
 
         public CommentController()
         {
@@ -34,12 +34,14 @@ namespace DENMAP_SERVER.Controller
                     .WithHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
             });
 
-            Get(_basePath + "/", args =>
+            Get(_BASE_PATH + "/", args =>
             {
                 int? id = (int?)this.Request.Query["postId"];
 
                 if (!id.HasValue)
+                {
                     return Response.AsJson(new { message = "Missing id parameter" }, HttpStatusCode.BadRequest);
+                }
 
                 try
                 {
@@ -49,7 +51,9 @@ namespace DENMAP_SERVER.Controller
 
                     List<User> users = new List<User>();
                     if (comments.Count != 0)
+                    {
                         users = _userService.GetUsersByIds(comments.Select(x => x.UserId).ToList());
+                    }
 
                     Console.WriteLine("users: " + users.Count);
                     //Dictionary<int, User> userDict = new Dictionary<int, User>();
@@ -70,7 +74,7 @@ namespace DENMAP_SERVER.Controller
                 }
             });
 
-            Post(_basePath + "/", args =>
+            Post(_BASE_PATH + "/", args =>
             {
 
                 CommentRequest request = null;
@@ -89,11 +93,15 @@ namespace DENMAP_SERVER.Controller
                 {
                     post = _postService.GetPostById(request.postId);
                     if (post == null)
+                    {
                         return Response.AsJson(new { message = "Post not found" }, HttpStatusCode.NotFound);
+                    }
 
                     User user = _userService.GetUserById(request.userId);
                     if (user == null)
+                    {
                         return Response.AsJson(new { message = "User not found" }, HttpStatusCode.NotFound);
+                    }
                 }
                 catch (Exception e)
                 {

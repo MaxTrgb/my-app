@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using DENMAP_SERVER.Entity;
+﻿using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Repository;
 using MySql.Data.MySqlClient;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DENMAP_SERVER.Service
 {
@@ -31,7 +24,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return id;
@@ -50,7 +44,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return comments;
@@ -69,7 +64,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return comments;

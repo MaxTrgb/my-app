@@ -1,11 +1,6 @@
 ﻿using DENMAP_SERVER.Entity;
 using DENMAP_SERVER.Service;
 using Nancy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy.ModelBinding;
 using DENMAP_SERVER.Controller.request;
 
@@ -15,7 +10,7 @@ namespace DENMAP_SERVER.Controller
     {
         private GenreService _genreService = new GenreService();
 
-        private readonly string _basePath = "/api/v1/genre";
+        private const string _BASE_PATH = "/api/v1/genre";
 
 
         public GenreController()
@@ -38,7 +33,7 @@ namespace DENMAP_SERVER.Controller
             });
 
 
-            Get(_basePath + "/", _ =>
+            Get(_BASE_PATH + "/", _ =>
             {
                 try
                 {
@@ -53,7 +48,7 @@ namespace DENMAP_SERVER.Controller
             });
 
 
-            Get(_basePath + "/{id}", parameters =>
+            Get(_BASE_PATH + "/{id}", parameters =>
             {
                 int id = parameters.id;
                 try
@@ -68,7 +63,7 @@ namespace DENMAP_SERVER.Controller
                 }
             });
 
-            Post(_basePath + "/", args =>
+            Post(_BASE_PATH + "/", args =>
             {
                 GenreRequest request = null;
 

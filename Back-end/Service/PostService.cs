@@ -25,7 +25,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
             return id;
@@ -43,7 +44,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -68,7 +70,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -88,14 +91,15 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
             return posts;
         }
 
-        public int UpdatePost(int id, int userId, string title, string image, string content, double rating, DateTime createdAt)
+        public int UpdatePost(int id, string title, string image, string content, int genreId)
         {
             int result = 0;
 
@@ -104,11 +108,12 @@ namespace DENMAP_SERVER.Service
                 connection.Open();
                 try
                 {
-                    result = postRepository.updatePost(connection, id, userId, title, image, content, rating, createdAt);
+                    result = postRepository.updatePost(connection, id, title, image, content, genreId);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -128,7 +133,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -148,7 +154,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -175,7 +182,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
@@ -196,7 +204,8 @@ namespace DENMAP_SERVER.Service
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Database error.\nError:" + ex.Message);
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
                 }
             }
 
