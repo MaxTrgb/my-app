@@ -122,6 +122,66 @@ namespace DENMAP_SERVER.Controller
                     return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
                 }
             });
+
+            Delete(_BASE_PATH + "/{id}", parameters =>
+            {
+                int commentIdFromUrl = parameters.id;
+                int? id = (int?)this.Request.Query["userId"];
+                Comment comment = null;
+
+                if (!id.HasValue)
+                {
+                    return Response.AsJson(new { message = "Missing id parameter" }, HttpStatusCode.BadRequest);
+                }
+
+                try
+                {
+                    comment = _commentService.GetCommentById(commentIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                if (comment == null)
+                {
+                    return Response.AsJson(new { message = "Comment not found" }, HttpStatusCode.NotFound);
+                }
+
+                if (!comment.UserId.Equals(id.Value))
+                {
+                    return Response.AsJson(new { message = "You are not authorized to delete this comment" }, HttpStatusCode.Unauthorized);
+                }
+
+                Post post = null;
+                try
+                {
+                    post = _postService.GetPostById(comment.PostId);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                if (post == null)
+                {
+                    return Response.AsJson(new { message = "Post not found" }, HttpStatusCode.NotFound);
+                }
+
+                try
+                {
+                    _commentService.DeleteComment(commentIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                _postService.ReCalculatePostRating(post.Id);
+                _userService.ReCalculateUserRating(post.UserId);
+
+                return Response.AsJson(new { message = "Comment deleted" }, HttpStatusCode.OK);
+            });
         }
     }
 }

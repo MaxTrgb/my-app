@@ -79,5 +79,50 @@ namespace DENMAP_SERVER.Repository
 
             return comments;
         }
+
+        public void deleteComment(DbConnection connection, int id)
+        {
+            string query = $"DELETE FROM comments WHERE id = {id}";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public Comment getCommentById(DbConnection connection, int id)
+        {
+            string query = $"SELECT * FROM comments WHERE id = {id}";
+
+            Comment comment = null;
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
+            {
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        comment = new Comment(
+                            Convert.ToInt32(reader["id"]),
+                            Convert.ToInt32(reader["user_id"]),
+                            Convert.ToDouble(reader["rating"]),
+                            Convert.ToString(reader["message"]),
+                            Convert.ToInt32(reader["post_id"]),
+                            Convert.ToDateTime(reader["created_at"])
+                        );
+                    }
+                }
+            }
+            return comment;
+        }
+
+        public void deleteCommentsByPostId(DbConnection connection, int postId)
+        {
+            string query = $"DELETE FROM comments WHERE post_id = {postId}";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

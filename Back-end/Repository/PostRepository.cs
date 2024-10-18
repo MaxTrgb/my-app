@@ -231,5 +231,15 @@ namespace DENMAP_SERVER.Repository
             }
             return posts;
         }
+
+        public void deletePost(DbConnection connection, int id)
+        {
+            string query = $"DELETE FROM posts WHERE id = {id}";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, (MySqlConnection)connection))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

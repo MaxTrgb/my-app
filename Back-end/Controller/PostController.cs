@@ -228,6 +228,60 @@ namespace DENMAP_SERVER.Controller
                     return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
                 }
             });
+
+            Delete(_BASE_PATH + "/{id}", parameters =>
+            {
+                int postIdFromUrl = parameters.id;
+
+                int? id = (int?)this.Request.Query["userId"];
+
+                if (!id.HasValue)
+                {
+                    return Response.AsJson(new { message = "Missing id parameter" }, HttpStatusCode.BadRequest);
+                }
+
+                Post post = null;
+                try
+                {
+                    post = _postService.GetPostById(postIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                if(post == null)
+                {
+                    return Response.AsJson(new { message = "Post not found" }, HttpStatusCode.NotFound);
+                }
+
+                if (!post.UserId.Equals(id.Value))
+                {
+                    return Response.AsJson(new { message = "You have no permission to delete this post" }, HttpStatusCode.Unauthorized);
+                }
+
+                try
+                {
+                    _commentService.DeleteCommentsByPostId(postIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                try
+                {
+                    _postService.DeletePost(postIdFromUrl);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsJson(new { message = e.Message }, HttpStatusCode.BadRequest);
+                }
+
+                _userService.ReCalculateUserRating(post.UserId);
+
+                return Response.AsJson(new { message = "Post deleted successfully" }, HttpStatusCode.OK);
+            });
         }
 
         private Response GetPostsByGenreId(int id)

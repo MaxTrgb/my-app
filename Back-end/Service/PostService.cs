@@ -211,5 +211,22 @@ namespace DENMAP_SERVER.Service
 
             return posts;
         }
+
+        public void DeletePost(int id)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                try
+                {
+                    postRepository.deletePost(connection, id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
+                }
+            }
+        }
     }
 }

@@ -70,5 +70,60 @@ namespace DENMAP_SERVER.Service
             }
             return comments;
         }
+
+        public void DeleteComment(int id)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                try
+                {
+                    commentRepository.deleteComment(connection, id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
+                }
+            }
+        }
+
+        public Comment GetCommentById(int id)
+        {
+            Comment comment = null;
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                try
+                {
+                    comment = commentRepository.getCommentById(connection, id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
+                }
+            }
+            return comment;
+        }
+
+        public void DeleteCommentsByPostId(int postId)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                try
+                {
+                    commentRepository.deleteCommentsByPostId(connection, postId);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Database error.\nError:" + ex.Message);
+                    throw new Exception("Server error");
+                }
+            }
+        }
     }
 }
